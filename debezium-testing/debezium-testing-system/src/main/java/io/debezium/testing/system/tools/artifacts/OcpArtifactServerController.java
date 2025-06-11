@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +145,9 @@ public class OcpArtifactServerController {
 
     private List<String> tryReadingArtifactListing() throws IOException {
         LOGGER.info("Trying to read listing from artifact server");
-        Pod pod = ocpUtils.podsForDeployment(deployment).get(0);
+        List<Pod> podList = ocpUtils.podsForDeployment(deployment);
+        LOGGER.info("ALVAR: The available pods are: " + podList.stream().map(Pod::getMetadata).map(ObjectMeta::getName).toList());
+        Pod pod = podList.getFirst();
 
         try (InputStream is = ocp.pods()
                 .inNamespace(project)
