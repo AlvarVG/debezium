@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import io.fabric8.kubernetes.api.model.ObjectMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +96,7 @@ public class OcpArtifactServerController {
     public Plugin createPlugin(String name, List<String> artifacts) {
         List<Artifact> pluginArtifacts = artifacts.stream()
                 .map(this::getArtifactUrlAsString)
-                .map(a -> a.orElseThrow(() -> new IllegalStateException("Missing artifact for plugin'" + name + "'")))
+                .map(a -> a.orElseThrow(() -> new IllegalStateException("Missing artifact for plugin '" + name + "'")))
                 .map(this::createArtifact)
                 .collect(toList());
 
@@ -146,7 +145,6 @@ public class OcpArtifactServerController {
     private List<String> tryReadingArtifactListing() throws IOException {
         LOGGER.info("Trying to read listing from artifact server");
         List<Pod> podList = ocpUtils.podsForDeployment(deployment);
-        LOGGER.warn("ALVAR: The available pods are: " + podList.stream().map(Pod::getMetadata).map(ObjectMeta::getName).toList());
         Pod pod = podList.getFirst();
 
         try (InputStream is = ocp.pods()
@@ -155,12 +153,12 @@ public class OcpArtifactServerController {
                 .inContainer("debezium-artifact-server")
                 .file("/opt/plugins/artifacts.txt")
                 .read()) {
-            LOGGER.warn("ALVAR: Getting the string");
             String listing = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            LOGGER.warn("ALVAR: Returning the string");
             return listing.lines().collect(toList());
         }
     }
+
+    // debezium-2.7.3.CR5-scripting.zip
 
     public Map<String, HttpUrl> listArtifacts() throws IOException {
         List<String> listing = readArtifactListing();
