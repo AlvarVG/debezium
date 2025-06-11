@@ -146,7 +146,7 @@ public class OcpArtifactServerController {
     private List<String> tryReadingArtifactListing() throws IOException {
         LOGGER.info("Trying to read listing from artifact server");
         List<Pod> podList = ocpUtils.podsForDeployment(deployment);
-        LOGGER.info("ALVAR: The available pods are: " + podList.stream().map(Pod::getMetadata).map(ObjectMeta::getName).toList());
+        LOGGER.warn("ALVAR: The available pods are: " + podList.stream().map(Pod::getMetadata).map(ObjectMeta::getName).toList());
         Pod pod = podList.getFirst();
 
         try (InputStream is = ocp.pods()
@@ -155,7 +155,9 @@ public class OcpArtifactServerController {
                 .inContainer("debezium-artifact-server")
                 .file("/opt/plugins/artifacts.txt")
                 .read()) {
+            LOGGER.warn("ALVAR: Getting the string");
             String listing = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            LOGGER.warn("ALVAR: Returning the string");
             return listing.lines().collect(toList());
         }
     }
