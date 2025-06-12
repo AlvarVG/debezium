@@ -158,8 +158,6 @@ public class OcpArtifactServerController {
         }
     }
 
-    // debezium-2.7.3.CR5-scripting.zip
-
     public Map<String, HttpUrl> listArtifacts() throws IOException {
         List<String> listing = readArtifactListing();
 
