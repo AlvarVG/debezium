@@ -36,7 +36,7 @@ import io.strimzi.api.kafka.model.zookeeper.ZookeeperClusterSpecBuilder;
  * This class simplifies building of kafka by providing default configuration for whole kafka or parts of its definition
  */
 public final class FabricKafkaBuilder extends FabricBuilderWrapper<FabricKafkaBuilder, KafkaBuilder, Kafka> {
-    public static String DEFAULT_KAFKA_NAME = "debezium-kafka-cluster";
+    public static String DEFAULT_KAFKA_NAME = "kafka-cluster";
 
     private FabricKafkaBuilder(KafkaBuilder kafkaBuilder) {
         super(kafkaBuilder);
