@@ -32,13 +32,13 @@
     <image.as>${image.build.registry}/debezium/test-artifact-server:${project.version}</image.as>
 
     <!--Docker configuration-->
-    <docker.image.mysql>quay.io/debezium/example-mysql-master:latest</docker.image.mysql>
-    <docker.image.mysql.replica>quay.io/debezium/example-mysql-replica:latest</docker.image.mysql.replica>
-    <docker.image.mariadb>quay.io/debezium/example-mariadb:latest</docker.image.mariadb>
-    <docker.image.postgresql>quay.io/debezium/example-postgres:latest</docker.image.postgresql>
+    <docker.image.mysql>quay.io/debezium/example-mysql-master:3.0.8.Final</docker.image.mysql>
+    <docker.image.mysql.replica>quay.io/debezium/example-mysql-replica:3.0.8.Final</docker.image.mysql.replica>
+    <docker.image.mariadb>quay.io/debezium/example-mariadb:3.0.8.Final</docker.image.mariadb>
+    <docker.image.postgresql>quay.io/debezium/example-postgres:3.0.8.Final</docker.image.postgresql>
     <docker.image.postgresql.replica>quay.io/debezium/postgres:15</docker.image.postgresql.replica>
-    <docker.image.mongo>quay.io/debezium/example-mongodb:2.6</docker.image.mongo>
-    <docker.image.mongo.sharded>quay.io/debezium/example-mongodb:2.6</docker.image.mongo.sharded>
+    <docker.image.mongo>quay.io/debezium/example-mongodb:3.0.8.Final</docker.image.mongo>
+    <docker.image.mongo.sharded>quay.io/debezium/example-mongodb:3.0.8.Final</docker.image.mongo.sharded>
     <docker.image.sqlserver>mcr.microsoft.com/mssql/server:2019-latest</docker.image.sqlserver>
     <docker.image.db2>quay.io/rh_integration/dbz-db2-cdc:latest</docker.image.db2>
     <docker.image.oracle>quay.io/rh_integration/dbz-oracle:19.3.0</docker.image.oracle>

@@ -42,6 +42,9 @@ public class SqlDatabaseClient implements DatabaseClient<Connection, SQLExceptio
         try (Connection con = connect()) {
             commands.execute(con);
         }
+        catch (Exception e) {
+            LOGGER.error("Exception at doExecute: ", e);
+        }
         return true;
     }
 
@@ -64,6 +67,9 @@ public class SqlDatabaseClient implements DatabaseClient<Connection, SQLExceptio
             try (Statement stmt = con.createStatement()) {
                 stmt.execute(command);
             }
+            catch (Exception e) {
+                LOGGER.error("Exception at execute 3: ", e);
+            }
         });
     }
 
@@ -72,6 +78,9 @@ public class SqlDatabaseClient implements DatabaseClient<Connection, SQLExceptio
         execute(con -> {
             try (Statement stmt = con.createStatement()) {
                 stmt.execute(command);
+            }
+            catch (Exception e) {
+                LOGGER.error("Exception at doExecute 4: ", e);
             }
         });
     }
@@ -83,6 +92,10 @@ public class SqlDatabaseClient implements DatabaseClient<Connection, SQLExceptio
             try (Statement stmt = con.createStatement()) {
                 ResultSet rs = stmt.executeQuery(command);
                 return resultSetProcessor.apply(rs);
+            }
+            catch (Exception e) {
+                LOGGER.error("Exception at executeQuery: ", e);
+                throw e;
             }
         }
     }
