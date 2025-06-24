@@ -295,7 +295,7 @@ public class OpenShiftUtils {
     public Optional<InstallPlan> installPlan(String namespace, String subscriptionName, String startingCSV) {
         List<InstallPlan> installPlans = client.operatorHub().installPlans().inNamespace(namespace).list().getItems();
         Stream<InstallPlan> installPlanStream = installPlans.stream()
-                .filter(plan -> subscriptionName.equals(plan.getMetadata().getOwnerReferences().getFirst().getName()));
+                .filter(plan -> subscriptionName.equals(plan.getMetadata().getOwnerReferences().get(0).getName()));
         if (startingCSV != null) {
             installPlanStream = installPlanStream.filter(plan -> plan.getSpec().getClusterServiceVersionNames().contains(startingCSV));
         }
