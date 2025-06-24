@@ -46,7 +46,7 @@ import io.strimzi.api.kafka.model.zookeeper.ZookeeperClusterSpecBuilder;
  */
 public final class FabricKafkaBuilder extends FabricBuilderWrapper<FabricKafkaBuilder, KafkaBuilder, Kafka> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FabricKafkaBuilder.class);
-    public static String DEFAULT_KAFKA_NAME = "debezium-kafka-cluster";
+    public static String DEFAULT_KAFKA_NAME = "kafka-cluster";
     public static String DEFAULT_NODE_POOL_NAME = "node-pool";
     private static Boolean useKraft;
 
