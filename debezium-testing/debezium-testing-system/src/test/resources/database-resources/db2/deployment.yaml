@@ -40,14 +40,7 @@ spec:
         - name: db2
           mountPath: /database
         securityContext:
-          #privileged: true
-          capabilities:
-            add:
-              - IPC_LOCK
-              - SYS_RESOURCE
-          runAsUser: 1000
-          runAsGroup: 1000
-          allowPrivilegeEscalation: false
+          privileged: true
         resources: {}
         imagePullPolicy: Always
         livenessProbe:
