@@ -55,6 +55,6 @@ public class OcpSqlServerController extends OcpSqlDatabaseController {
                 .file(DB_INIT_SCRIPT_PATH_CONTAINER)
                 .upload(initScript);
         ocpUtils.executeCommand(deployment, project, true, "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", DATABASE_SQLSERVER_SA_PASSWORD, "-i",
-                DB_INIT_SCRIPT_PATH_CONTAINER);
+                DB_INIT_SCRIPT_PATH_CONTAINER, "-C", "-N", "o");
     }
 }
