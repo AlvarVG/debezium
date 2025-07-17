@@ -128,7 +128,7 @@ public abstract class Db2Tests extends ConnectorTest {
 
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         //TODO: Remove this
-        waitForDebug("shouldBeDown", 5L);
+        waitForDebug("shouldBeDown", 0L);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
     }
 
@@ -140,7 +140,7 @@ public abstract class Db2Tests extends ConnectorTest {
         //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         //TODO: Remove this
-        waitForDebug("shouldResumeStreamingAfterRedeployment", 5L);
+        waitForDebug("shouldResumeStreamingAfterRedeployment", 1L);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
         awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
     }
