@@ -137,13 +137,16 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
                     }
                 }
 
+                LOGGER.warn("AVIANA: config.isLogPositionCheckEnabled(): " + config.isLogPositionCheckEnabled());
                 if (config.isLogPositionCheckEnabled()) {
 
                     boolean logPositionAvailable = isLogPositionAvailable(logPositionValidator, partition, offset, config);
 
+                    LOGGER.warn("AVIANA: logPositionAvailable: " + logPositionAvailable);
                     if (!logPositionAvailable && snapshotter.shouldStream()) {
                         LOGGER.warn("Last recorded offset is no longer available on the server.");
 
+                        LOGGER.warn("AVIANA: snapshotter.shouldSnapshotOnDataError(): " + snapshotter.shouldSnapshotOnDataError());
                         if (snapshotter.shouldSnapshotOnDataError()) {
 
                             LOGGER.info("The last recorded offset is no longer available but we are in {} snapshot mode. " +
