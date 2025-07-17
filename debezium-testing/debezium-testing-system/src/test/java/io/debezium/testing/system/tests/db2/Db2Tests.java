@@ -135,12 +135,15 @@ public abstract class Db2Tests extends ConnectorTest {
     @Test
     @Order(60)
     public void shouldResumeStreamingAfterRedeployment() throws Exception {
+        //TODO: Remove this
+        long waitTime = 5L;
+        waitForDebug("shouldResumeStreamingAfterRedeployment - 1", waitTime);
         connectController.deployConnector(connectorConfig);
 
         //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         //TODO: Remove this
-        waitForDebug("shouldResumeStreamingAfterRedeployment", 1L);
+        waitForDebug("shouldResumeStreamingAfterRedeployment -2 ", waitTime);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
         awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
     }
@@ -189,7 +192,7 @@ public abstract class Db2Tests extends ConnectorTest {
 //    }
 
     private void waitForDebug(String testName, Long waitTime)  {
-        LOGGER.info("ALVAR DEBUG: Waiting 5 minutes before assertions in test: " + testName);
+        LOGGER.info("ALVAR DEBUG: Waiting " + waitTime + " minutes before assertions in test: " + testName);
         try {
             TimeUnit.MINUTES.sleep(waitTime);
         }
