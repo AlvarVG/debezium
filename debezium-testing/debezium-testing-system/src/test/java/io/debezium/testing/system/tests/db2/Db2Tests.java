@@ -5,14 +5,12 @@
  */
 package io.debezium.testing.system.tests.db2;
 
-import static io.debezium.testing.system.assertions.KafkaAssertions.LOGGER;
 import static io.debezium.testing.system.assertions.KafkaAssertions.awaitAssert;
 import static io.debezium.testing.system.tools.ConfigProperties.DATABASE_DB2_DBZ_PASSWORD;
 import static io.debezium.testing.system.tools.ConfigProperties.DATABASE_DB2_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -103,7 +101,7 @@ public abstract class Db2Tests extends ConnectorTest {
         renameCustomer(dbController, "Tom", "Thomas");
 
         String prefix = connectorConfig.getDbServerName();
-        String updatesTopic = prefix + ".u.CUSTOMERS";, 0L);
+        String updatesTopic = prefix + ".u.CUSTOMERS";
         awaitAssert(() -> assertions.assertRecordsCount(prefix + ".DB2INST1.CUSTOMERS", 5));
         awaitAssert(() -> assertions.assertRecordsCount(updatesTopic, 1));
         awaitAssert(() -> assertions.assertRecordsContain(updatesTopic, "Thomas"));
@@ -124,7 +122,6 @@ public abstract class Db2Tests extends ConnectorTest {
     public void shouldResumeStreamingAfterRedeployment() throws Exception {
         connectController.deployConnector(connectorConfig);
 
-        //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
         awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
@@ -136,7 +133,6 @@ public abstract class Db2Tests extends ConnectorTest {
         connectController.destroy();
         insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
 
-        //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
     }
@@ -146,7 +142,6 @@ public abstract class Db2Tests extends ConnectorTest {
     public void shouldResumeStreamingAfterCrash() throws InterruptedException {
         connectController.restore();
 
-        //TODO: Fails here: to have <7> messages but it had <5> within 10 minutes.
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
         awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
@@ -159,21 +154,10 @@ public abstract class Db2Tests extends ConnectorTest {
         connectorConfig = connectorConfig.addJdbcUnwrapSMT();
         connectController.deployConnector(connectorConfig);
 
-        //TODO: Fails here: to have <8> messages but it had <5> within 10 minutes.
         insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
 
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
         awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
         awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
-    }
-
-    private void waitForDebug(String testName, Long waitTime)  {
-        LOGGER.info("ALVAR DEBUG: Waiting " + waitTime + " minutes before assertions in test: " + testName);
-        try {
-            TimeUnit.MINUTES.sleep(waitTime);
-        }
-        catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

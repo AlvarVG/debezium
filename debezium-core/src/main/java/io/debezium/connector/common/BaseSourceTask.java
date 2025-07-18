@@ -158,6 +158,7 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
                             return;
                         }
 
+                        LOGGER.warn("AVIANA: snapshotter.name(): " + snapshotter.name());
                         LOGGER.warn("The connector is trying to read change stream starting at " + offset.getSourceInfo() + ", but this is no longer "
                                 + "available on the server. Reconfigure the connector to use a snapshot mode when needed.");
 
