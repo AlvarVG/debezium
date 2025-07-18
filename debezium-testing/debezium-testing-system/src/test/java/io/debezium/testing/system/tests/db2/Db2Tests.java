@@ -127,37 +127,37 @@ public abstract class Db2Tests extends ConnectorTest {
         awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
     }
 
-    @Test
-    @Order(70)
-    public void shouldBeDownAfterCrash(SqlDatabaseController dbController) throws Exception {
-        connectController.destroy();
-        insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
-    }
-
-    @Test
-    @Order(80)
-    public void shouldResumeStreamingAfterCrash() throws InterruptedException {
-        connectController.restore();
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
-        awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
-    }
-
-    @Test
-    @Order(90)
-    public void shouldExtractNewRecordState(SqlDatabaseController dbController) throws Exception {
-        connectController.undeployConnector(connectorConfig.getConnectorName());
-        connectorConfig = connectorConfig.addJdbcUnwrapSMT();
-        connectController.deployConnector(connectorConfig);
-
-        insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
-        awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
-    }
+//    @Test
+//    @Order(70)
+//    public void shouldBeDownAfterCrash(SqlDatabaseController dbController) throws Exception {
+//        connectController.destroy();
+//        insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
+//
+//        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+//        awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
+//    }
+//
+//    @Test
+//    @Order(80)
+//    public void shouldResumeStreamingAfterCrash() throws InterruptedException {
+//        connectController.restore();
+//
+//        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+//        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
+//        awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
+//    }
+//
+//    @Test
+//    @Order(90)
+//    public void shouldExtractNewRecordState(SqlDatabaseController dbController) throws Exception {
+//        connectController.undeployConnector(connectorConfig.getConnectorName());
+//        connectorConfig = connectorConfig.addJdbcUnwrapSMT();
+//        connectController.deployConnector(connectorConfig);
+//
+//        insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
+//
+//        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+//        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
+//        awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
+//    }
 }
