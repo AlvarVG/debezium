@@ -60,9 +60,6 @@ public abstract class Db2Tests extends ConnectorTest {
     public void shouldHaveRegisteredConnector() {
 
         Request r = new Request.Builder().url(connectController.getApiURL().resolve("/connectors")).build();
-        //TODO: Remove this
-        waitForDebug("shouldHaveRegisteredConnector", 0L);
-
         awaitAssert(() -> {
             try (Response res = new OkHttpClient().newCall(r).execute()) {
                 assertThat(res.body().string()).contains(connectorConfig.getConnectorName());
@@ -74,8 +71,6 @@ public abstract class Db2Tests extends ConnectorTest {
     @Order(20)
     public void shouldCreateKafkaTopics() {
         String prefix = connectorConfig.getDbServerName();
-        //TODO: Remove this
-        waitForDebug("shouldCreateKafkaTopics", 0L);
         assertions.assertTopicsExist(
                 prefix + ".DB2INST1.CUSTOMERS",
                 prefix + ".DB2INST1.ORDERS",
@@ -89,8 +84,6 @@ public abstract class Db2Tests extends ConnectorTest {
         connectController.getMetricsReader().waitForDB2Snapshot(connectorConfig.getDbServerName());
 
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        //TODO: Remove this
-        waitForDebug("shouldSnapshotChanges", 0L);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 4));
     }
 
@@ -100,8 +93,6 @@ public abstract class Db2Tests extends ConnectorTest {
         insertCustomer(dbController, "Tom", "Tester", "tom@test.com");
 
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        //TODO: Remove this
-        waitForDebug("shouldStreamChanges", 0L);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
         awaitAssert(() -> assertions.assertRecordsContain(topic, "tom@test.com"));
     }
@@ -112,9 +103,7 @@ public abstract class Db2Tests extends ConnectorTest {
         renameCustomer(dbController, "Tom", "Thomas");
 
         String prefix = connectorConfig.getDbServerName();
-        String updatesTopic = prefix + ".u.CUSTOMERS";
-        //TODO: Remove this
-        waitForDebug("shouldRerouteUpdates", 0L);
+        String updatesTopic = prefix + ".u.CUSTOMERS";, 0L);
         awaitAssert(() -> assertions.assertRecordsCount(prefix + ".DB2INST1.CUSTOMERS", 5));
         awaitAssert(() -> assertions.assertRecordsCount(updatesTopic, 1));
         awaitAssert(() -> assertions.assertRecordsContain(updatesTopic, "Thomas"));
@@ -127,69 +116,56 @@ public abstract class Db2Tests extends ConnectorTest {
         insertCustomer(dbController, "Jerry", "Tester", "jerry@test.com");
 
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        //TODO: Remove this
-        waitForDebug("shouldBeDown", 0L);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
     }
 
     @Test
     @Order(60)
     public void shouldResumeStreamingAfterRedeployment() throws Exception {
-        //TODO: Remove this
-        long waitTime = 5L;
-        waitForDebug("shouldResumeStreamingAfterRedeployment - 1", waitTime);
         connectController.deployConnector(connectorConfig);
 
         //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
         String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        //TODO: Remove this
-        waitForDebug("shouldResumeStreamingAfterRedeployment -2 ", waitTime);
         awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
         awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
     }
 
-//    @Test
-//    @Order(70)
-//    public void shouldBeDownAfterCrash(SqlDatabaseController dbController) throws Exception {
-//        connectController.destroy();
-//        insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
-//
-//        //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
-//        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-//        //TODO: Remove this
-//        waitForDebug("shouldBeDownAfterCrash", 5L);
-//        awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
-//    }
+    @Test
+    @Order(70)
+    public void shouldBeDownAfterCrash(SqlDatabaseController dbController) throws Exception {
+        connectController.destroy();
+        insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
 
-//    @Test
-//    @Order(80)
-//    public void shouldResumeStreamingAfterCrash() throws InterruptedException {
-//        connectController.restore();
-//
-//        //TODO: Fails here: to have <7> messages but it had <5> within 10 minutes.
-//        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-//        //TODO: Remove this
-//        waitForDebug("shouldResumeStreamingAfterCrash", 5L);
-//        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
-//        awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
-//    }
+        //TODO: Fails here: to have <6> messages but it had <5> within 10 minutes.
+        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+        awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
+    }
 
-//    @Test
-//    @Order(90)
-//    public void shouldExtractNewRecordState(SqlDatabaseController dbController) throws Exception {
-//        connectController.undeployConnector(connectorConfig.getConnectorName());
-//        connectorConfig = connectorConfig.addJdbcUnwrapSMT();
-//        connectController.deployConnector(connectorConfig);
-//
-//        //TODO: Fails here: to have <8> messages but it had <5> within 10 minutes.
-//        insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
-//
-//        //TODO: Remove this
-//        waitForDebug("shouldExtractNewRecordState", 5L);
-//        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-//        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
-//        awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
-//    }
+    @Test
+    @Order(80)
+    public void shouldResumeStreamingAfterCrash() throws InterruptedException {
+        connectController.restore();
+
+        //TODO: Fails here: to have <7> messages but it had <5> within 10 minutes.
+        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
+        awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
+    }
+
+    @Test
+    @Order(90)
+    public void shouldExtractNewRecordState(SqlDatabaseController dbController) throws Exception {
+        connectController.undeployConnector(connectorConfig.getConnectorName());
+        connectorConfig = connectorConfig.addJdbcUnwrapSMT();
+        connectController.deployConnector(connectorConfig);
+
+        //TODO: Fails here: to have <8> messages but it had <5> within 10 minutes.
+        insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
+
+        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
+        awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
+    }
 
     private void waitForDebug(String testName, Long waitTime)  {
         LOGGER.info("ALVAR DEBUG: Waiting " + waitTime + " minutes before assertions in test: " + testName);
