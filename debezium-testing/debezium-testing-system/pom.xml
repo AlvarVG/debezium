@@ -42,6 +42,7 @@
     <docker.image.sqlserver>mcr.microsoft.com/mssql/server:2019-latest</docker.image.sqlserver>
     <docker.image.db2>quay.io/rh_integration/dbz-db2-cdc:latest</docker.image.db2>
     <docker.image.oracle>quay.io/rh_integration/dbz-oracle:19.3.0</docker.image.oracle>
+    <docker.image.informix>quay.io/rh_integration/dbz-informix:14</docker.image.informix>
 
     <!--OCP configuration-->
     <ocp.request.retry.backoff.limit>5</ocp.request.retry.backoff.limit>
@@ -54,6 +55,7 @@
     <ocp.project.sqlserver>${ocp.project.debezium}-sqlserver</ocp.project.sqlserver>
     <ocp.project.db2>${ocp.project.debezium}-db2</ocp.project.db2>
     <ocp.project.oracle>${ocp.project.debezium}-oracle</ocp.project.oracle>
+    <ocp.project.informix>${ocp.project.debezium}-informix</ocp.project.informix>
 
     <ocp.image.mysql>${docker.image.mysql}</ocp.image.mysql>
     <ocp.image.mariadb>${docker.image.mariadb}</ocp.image.mariadb>
@@ -64,6 +66,7 @@
     <ocp.image.sqlserver>${docker.image.sqlserver}</ocp.image.sqlserver>
     <ocp.image.db2>${docker.image.db2}</ocp.image.db2>
     <ocp.image.oracle>${docker.image.oracle}</ocp.image.oracle>
+    <ocp.image.informix>${docker.image.informix}</ocp.image.informix>
 
     <!--Strimzi configuration-->
     <strimzi.operator.channel>stable</strimzi.operator.channel>
@@ -572,6 +575,7 @@
                 <test.docker.image.sqlserver>${docker.image.sqlserver}</test.docker.image.sqlserver>
                 <test.docker.image.db2>${docker.image.db2}</test.docker.image.db2>
                 <test.docker.image.oracle>${docker.image.oracle}</test.docker.image.oracle>
+                <test.docker.image.informix>${docker.image.informix}</test.docker.image.informix>
 
                 <!--OCP Configuration-->
                 <test.ocp.url>${ocp.url}</test.ocp.url>
