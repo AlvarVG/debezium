@@ -42,6 +42,7 @@ public class OcpInformixController extends OcpSqlDatabaseController {
 
     @Override
     public String getPublicDatabaseUrl() {
-        return super.getPublicDatabaseUrl() + ConfigProperties.DATABASE_INFORMIX_DBZ_DBNAME;
+        return "jdbc:informix-sqli://" + getPublicDatabaseHostname() + ":" + getPublicDatabasePort() + "/" + ConfigProperties.DATABASE_INFORMIX_DBZ_DBNAME
+                + ":INFORMIXSERVER=informix";
     }
 }

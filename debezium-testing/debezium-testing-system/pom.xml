@@ -137,6 +137,14 @@
     <database.db2.dbname>TESTDB</database.db2.dbname>
     <database.db2.cdc.schema>ASNCDC</database.db2.cdc.schema>
 
+    <!--Informix configuration -->
+    <database.informix.port>9088</database.informix.port>
+    <database.informix.username>informix</database.informix.username>
+    <database.informix.password>in4mix</database.informix.password>
+    <database.informix.dbz.username>${database.db2.username}</database.informix.dbz.username>
+    <database.informix.dbz.password>${database.db2.password}</database.informix.dbz.password>
+    <database.informix.dbname>sysuser</database.informix.dbname>
+
     <!-- Oracle configuration-->
     <database.oracle.username>debezium</database.oracle.username>
     <database.oracle.password>dbz</database.oracle.password>
@@ -430,7 +438,6 @@
     </dependency>
 
     <dependency>
-
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
     </dependency>
@@ -448,6 +455,11 @@
     <dependency>
       <groupId>com.ibm.db2</groupId>
       <artifactId>jcc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ibm.informix</groupId>
+      <artifactId>jdbc</artifactId>
     </dependency>
 
     <dependency>
@@ -666,6 +678,16 @@
                 <test.database.db2.dbz.password>${database.db2.dbz.password}</test.database.db2.dbz.password>
                 <test.database.db2.dbname>${database.db2.dbname}</test.database.db2.dbname>
                 <test.database.db2.cdc.schema>${database.db2.cdc.schema}</test.database.db2.cdc.schema>
+
+                <!--Informix configuration-->
+                <test.database.informix.host>${database.informix.host}</test.database.informix.host>
+                <test.database.informix.port>${database.informix.port}</test.database.informix.port>
+                <test.database.informix.username>${database.informix.username}</test.database.informix.username>
+                <test.database.informix.password>${database.informix.password}</test.database.informix.password>
+                <test.database.informix.dbz.username>${database.informix.dbz.username}</test.database.informix.dbz.username>
+                <test.database.informix.dbz.password>${database.informix.dbz.password}</test.database.informix.dbz.password>
+                <test.database.informix.dbname>${database.informix.dbname}</test.database.informix.dbname>
+                <test.database.informix.cdc.schema>${database.informix.cdc.schema}</test.database.informix.cdc.schema>
 
                 <!-- Oracle configuration-->
                 <test.database.oracle>${database.oracle}</test.database.oracle>
