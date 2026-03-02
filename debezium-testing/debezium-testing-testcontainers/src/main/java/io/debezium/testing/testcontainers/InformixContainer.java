@@ -61,13 +61,13 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
 
         if (version.equals("12")) {
             waitStrategy.withStrategy(new LogMessageWaitStrategy()
-                    .withRegEx("Logical Log \\d Complete")
+                    .withRegEx(".*Logical Log \\d Complete.*\\s")
                     .withTimes(1)
                     .withStartupTimeout(Duration.of(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS, ChronoUnit.SECONDS)));
         }
         else {
             waitStrategy.withStrategy(new LogMessageWaitStrategy()
-                    .withRegEx("SCHAPI: Started \\d dbWorker threads")
+                    .withRegEx(".*SCHAPI: Started \\d dbWorker threads.*\\s")
                     .withTimes(1)
                     .withStartupTimeout(Duration.of(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS, ChronoUnit.SECONDS)));
         }
@@ -76,13 +76,10 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
     }
 
     private void preconfigure() {
-        this.withUsername(INFORMIX_USERNAME)
-                .withPassword(INFORMIX_PASSWORD)
-                .withDatabaseName(INFORMIX_DBNAME)
-                .withEnv("LICENSE", "accept");
+        addExposedPort(INFORMIX_PORT);
+        withEnv("LICENSE", "accept");
+        withConnectTimeoutSeconds(DEFAULT_CONNECT_TIMEOUT_SECONDS);
         this.waitStrategy = getWaitStrategyForVersion(DEFAULT_TAG);
-        this.withConnectTimeoutSeconds(DEFAULT_CONNECT_TIMEOUT_SECONDS);
-        this.addExposedPorts(INFORMIX_PORT, INFORMIX_PORT);
     }
 
     public String getDriverClassName() {
@@ -91,7 +88,7 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
 
     @Override
     public String getJdbcUrl() {
-        return "jdbc:informix-sqli://" + this.getHost() + ":" + INFORMIX_PORT + "/" + INFORMIX_DBNAME;
+        return "jdbc:informix-sqli://" + this.getHost() + ":" + this.getMappedPort(INFORMIX_PORT) + "/" + INFORMIX_DBNAME;
     }
 
     @Override

@@ -141,8 +141,8 @@
     <database.informix.port>9088</database.informix.port>
     <database.informix.username>informix</database.informix.username>
     <database.informix.password>in4mix</database.informix.password>
-    <database.informix.dbz.username>${database.db2.username}</database.informix.dbz.username>
-    <database.informix.dbz.password>${database.db2.password}</database.informix.dbz.password>
+    <database.informix.dbz.username>${database.informix.username}</database.informix.dbz.username>
+    <database.informix.dbz.password>${database.informix.password}</database.informix.dbz.password>
     <database.informix.dbname>sysuser</database.informix.dbname>
 
     <!-- Oracle configuration-->

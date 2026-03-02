@@ -40,11 +40,9 @@ public final class DockerInformixDeployer
         @Override
         public DockerInformixDeployer build() {
             container
-                    .withDatabaseName(ConfigProperties.DATABASE_INFORMIX_DBZ_DBNAME)
-                    .withPassword(ConfigProperties.DATABASE_INFORMIX_PASSWORD)
                     .withEnv("LICENSE", "accept")
                     .withPrivilegedMode(true)
-                    .withStartupTimeout(Duration.of(15, ChronoUnit.MINUTES));
+                    .withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES));
 
             return new DockerInformixDeployer(container);
         }
