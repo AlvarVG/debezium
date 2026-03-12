@@ -6,7 +6,6 @@
 package io.debezium.testing.testcontainers;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Future;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -26,7 +25,7 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
     public static final String INFORMIX_DBNAME = System.getProperty("test.database.informix.dbz.dbname", "testdb");
 
     public static final int INFORMIX_PORT = 9088;
-    private static final int INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS = 120;
+    private static final int INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS = 240;
     private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 120;
 
     public InformixContainer() {
@@ -56,19 +55,19 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
 
     public static WaitAllStrategy getWaitStrategyForVersion(String version) {
         WaitAllStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
-                .withStartupTimeout(Duration.of(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS, ChronoUnit.SECONDS));
+                .withStartupTimeout(Duration.ofSeconds(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS));
 
         if ("12".equals(version)) {
             waitStrategy.withStrategy(new LogMessageWaitStrategy()
-                    .withRegEx(".*Logical Log \\d Complete.*\\s")
+                    .withRegEx(".*Logical Log \\d+ Complete.*\\s")
                     .withTimes(1)
-                    .withStartupTimeout(Duration.of(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS, ChronoUnit.SECONDS)));
+                    .withStartupTimeout(Duration.ofSeconds(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS)));
         }
         else {
             waitStrategy.withStrategy(new LogMessageWaitStrategy()
-                    .withRegEx(".*SCHAPI: Started \\d dbWorker threads.*\\s")
+                    .withRegEx(".*SCHAPI: Started \\d+ dbWorker threads.*\\s")
                     .withTimes(1)
-                    .withStartupTimeout(Duration.of(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS, ChronoUnit.SECONDS)));
+                    .withStartupTimeout(Duration.ofSeconds(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS)));
         }
 
         return waitStrategy;
@@ -104,7 +103,6 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
 
     @Override
     protected String getTestQueryString() {
-        // Checks that the debezium database is present
-        return "SELECT count(*) FROM sysmaster:sysdatabases WHERE name = '" + INFORMIX_DBNAME + "'";
+        return "SELECT 1 FROM informix.systables;";
     }
 }

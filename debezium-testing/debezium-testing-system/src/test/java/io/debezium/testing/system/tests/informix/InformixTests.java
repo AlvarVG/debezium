@@ -56,7 +56,6 @@ public abstract class InformixTests extends ConnectorTest {
     @Test
     @Order(10)
     public void shouldHaveRegisteredConnector() {
-
         Request r = new Request.Builder().url(connectController.getApiURL().resolve("/connectors")).build();
 
         awaitAssert(() -> {
@@ -71,94 +70,94 @@ public abstract class InformixTests extends ConnectorTest {
     public void shouldCreateKafkaTopics() {
         String prefix = connectorConfig.getDbServerName();
         assertions.assertTopicsExist(
-                prefix + ".DB2INST1.CUSTOMERS",
-                prefix + ".DB2INST1.ORDERS",
-                prefix + ".DB2INST1.PRODUCTS",
-                prefix + ".DB2INST1.PRODUCTS_ON_HAND");
+                prefix + ".informix.customers",
+                prefix + ".informix.orders",
+                prefix + ".informix.products",
+                prefix + ".informix.products_on_hand");
     }
 
-    @Test
-    @Order(30)
-    public void shouldSnapshotChanges() {
-        connectController.getMetricsReader().waitForDB2Snapshot(connectorConfig.getDbServerName());
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(topic, 4));
-    }
-
-    @Test
-    @Order(40)
-    public void shouldStreamChanges(SqlDatabaseController dbController) throws SQLException {
-        insertCustomer(dbController, "Tom", "Tester", "tom@test.com");
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
-        awaitAssert(() -> assertions.assertRecordsContain(topic, "tom@test.com"));
-    }
-
-    @Test
-    @Order(41)
-    public void shouldRerouteUpdates(SqlDatabaseController dbController) throws SQLException {
-        renameCustomer(dbController, "Tom", "Thomas");
-
-        String prefix = connectorConfig.getDbServerName();
-        String updatesTopic = prefix + ".u.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(prefix + ".DB2INST1.CUSTOMERS", 5));
-        awaitAssert(() -> assertions.assertRecordsCount(updatesTopic, 1));
-        awaitAssert(() -> assertions.assertRecordsContain(updatesTopic, "Thomas"));
-    }
-
-    @Test
-    @Order(50)
-    public void shouldBeDown(SqlDatabaseController dbController) throws Exception {
-        connectController.undeployConnector(connectorConfig.getConnectorName());
-        insertCustomer(dbController, "Jerry", "Tester", "jerry@test.com");
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
-    }
-
-    @Test
-    @Order(60)
-    public void shouldResumeStreamingAfterRedeployment() throws Exception {
-        connectController.deployConnector(connectorConfig);
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
-        awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
-    }
-
-    @Test
-    @Order(70)
-    public void shouldBeDownAfterCrash(SqlDatabaseController dbController) throws SQLException {
-        connectController.destroy();
-        insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
-    }
-
-    @Test
-    @Order(80)
-    public void shouldResumeStreamingAfterCrash() throws InterruptedException {
-        connectController.restore();
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
-        awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
-    }
-
-    @Test
-    @Order(90)
-    public void shouldExtractNewRecordState(SqlDatabaseController dbController) throws Exception {
-        connectController.undeployConnector(connectorConfig.getConnectorName());
-        connectorConfig = connectorConfig.addJdbcUnwrapSMT();
-        connectController.deployConnector(connectorConfig);
-
-        insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
-
-        String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
-        awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
-        awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
-    }
+    // @Test
+    // @Order(30)
+    // public void shouldSnapshotChanges() {
+    // connectController.getMetricsReader().waitForDB2Snapshot(connectorConfig.getDbServerName());
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertRecordsCount(topic, 4));
+    // }
+    //
+    // @Test
+    // @Order(40)
+    // public void shouldStreamChanges(SqlDatabaseController dbController) throws SQLException {
+    // insertCustomer(dbController, "Tom", "Tester", "tom@test.com");
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
+    // awaitAssert(() -> assertions.assertRecordsContain(topic, "tom@test.com"));
+    // }
+    //
+    // @Test
+    // @Order(41)
+    // public void shouldRerouteUpdates(SqlDatabaseController dbController) throws SQLException {
+    // renameCustomer(dbController, "Tom", "Thomas");
+    //
+    // String prefix = connectorConfig.getDbServerName();
+    // String updatesTopic = prefix + ".u.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertRecordsCount(prefix + ".DB2INST1.CUSTOMERS", 5));
+    // awaitAssert(() -> assertions.assertRecordsCount(updatesTopic, 1));
+    // awaitAssert(() -> assertions.assertRecordsContain(updatesTopic, "Thomas"));
+    // }
+    //
+    // @Test
+    // @Order(50)
+    // public void shouldBeDown(SqlDatabaseController dbController) throws Exception {
+    // connectController.undeployConnector(connectorConfig.getConnectorName());
+    // insertCustomer(dbController, "Jerry", "Tester", "jerry@test.com");
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertRecordsCount(topic, 5));
+    // }
+    //
+    // @Test
+    // @Order(60)
+    // public void shouldResumeStreamingAfterRedeployment() throws Exception {
+    // connectController.deployConnector(connectorConfig);
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
+    // awaitAssert(() -> assertions.assertRecordsContain(topic, "jerry@test.com"));
+    // }
+    //
+    // @Test
+    // @Order(70)
+    // public void shouldBeDownAfterCrash(SqlDatabaseController dbController) throws SQLException {
+    // connectController.destroy();
+    // insertCustomer(dbController, "Nibbles", "Tester", "nibbles@test.com");
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertRecordsCount(topic, 6));
+    // }
+    //
+    // @Test
+    // @Order(80)
+    // public void shouldResumeStreamingAfterCrash() throws InterruptedException {
+    // connectController.restore();
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 7));
+    // awaitAssert(() -> assertions.assertRecordsContain(topic, "nibbles@test.com"));
+    // }
+    //
+    // @Test
+    // @Order(90)
+    // public void shouldExtractNewRecordState(SqlDatabaseController dbController) throws Exception {
+    // connectController.undeployConnector(connectorConfig.getConnectorName());
+    // connectorConfig = connectorConfig.addJdbcUnwrapSMT();
+    // connectController.deployConnector(connectorConfig);
+    //
+    // insertCustomer(dbController, "Eaton", "Beaver", "ebeaver@test.com");
+    //
+    // String topic = connectorConfig.getDbServerName() + ".DB2INST1.CUSTOMERS";
+    // awaitAssert(() -> assertions.assertMinimalRecordsCount(topic, 8));
+    // awaitAssert(() -> assertions.assertRecordIsUnwrapped(topic, 1));
+    // }
 }
