@@ -23,10 +23,10 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
     public static final String DEFAULT_TAG = parameterWithDefault(System.getProperty("version.informix.server"), FALLBACK_INFORMIX_VERSION);
     private static final String INFORMIX_USERNAME = parameterWithDefault(System.getProperty("database.username"), "informix");
     private static final String INFORMIX_PASSWORD = parameterWithDefault(System.getProperty("database.password"), "in4mix");
-    public static final String INFORMIX_DBNAME = System.getProperty("test.database.informix.dbz.dbname", "sysuser");
+    public static final String INFORMIX_DBNAME = System.getProperty("test.database.informix.dbz.dbname", "testdb");
 
     public static final int INFORMIX_PORT = 9088;
-    private static final int INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS = 300;
+    private static final int INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS = 120;
     private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 120;
 
     public InformixContainer() {
@@ -39,7 +39,6 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
 
     public InformixContainer(final DockerImageName dockerImageName) {
         super(dockerImageName);
-        dockerImageName.assertCompatibleWith(DEFAULT_IMAGE_NAME);
         preconfigure();
     }
 
@@ -55,11 +54,11 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
         return value;
     }
 
-    private WaitAllStrategy getWaitStrategyForVersion(String version) {
+    public static WaitAllStrategy getWaitStrategyForVersion(String version) {
         WaitAllStrategy waitStrategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT)
                 .withStartupTimeout(Duration.of(INFORMIX_DEFAULT_STARTUP_TIMEOUT_SECONDS, ChronoUnit.SECONDS));
 
-        if (version.equals("12")) {
+        if ("12".equals(version)) {
             waitStrategy.withStrategy(new LogMessageWaitStrategy()
                     .withRegEx(".*Logical Log \\d Complete.*\\s")
                     .withTimes(1)
@@ -79,6 +78,8 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
         addExposedPort(INFORMIX_PORT);
         withEnv("LICENSE", "accept");
         withConnectTimeoutSeconds(DEFAULT_CONNECT_TIMEOUT_SECONDS);
+        // WaitStrategy needs to be set like this, otherwise is being ignored for JdbcDatabaseContainer
+        // Check: https://github.com/testcontainers/testcontainers-java/issues/2994
         this.waitStrategy = getWaitStrategyForVersion(DEFAULT_TAG);
     }
 
@@ -103,6 +104,7 @@ public class InformixContainer extends JdbcDatabaseContainer<InformixContainer> 
 
     @Override
     protected String getTestQueryString() {
-        return "SELECT 1 FROM informix.systables;";
+        // Checks that the debezium database is present
+        return "SELECT count(*) FROM sysmaster:sysdatabases WHERE name = '" + INFORMIX_DBNAME + "'";
     }
 }

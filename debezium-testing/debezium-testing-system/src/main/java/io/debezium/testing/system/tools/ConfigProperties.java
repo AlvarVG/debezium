@@ -133,7 +133,7 @@ public final class ConfigProperties {
     public static final String DATABASE_INFORMIX_PASSWORD = System.getProperty("test.database.informix.password", "in4mix");
     public static final String DATABASE_INFORMIX_DBZ_USERNAME = System.getProperty("test.database.informix.dbz.username", DATABASE_INFORMIX_USERNAME);
     public static final String DATABASE_INFORMIX_DBZ_PASSWORD = System.getProperty("test.database.informix.dbz.password", DATABASE_INFORMIX_PASSWORD);
-    public static final String DATABASE_INFORMIX_DBZ_DBNAME = System.getProperty("test.database.informix.dbz.dbname", "sysuser");
+    public static final String DATABASE_INFORMIX_DBZ_DBNAME = System.getProperty("test.database.informix.dbz.dbname", "testdb");
     public static final int DATABASE_INFORMIX_PORT = Integer.parseInt(System.getProperty("test.database.informix.port", "9088"));
 
     // Oracle Configuration

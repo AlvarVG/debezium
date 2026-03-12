@@ -143,7 +143,7 @@
     <database.informix.password>in4mix</database.informix.password>
     <database.informix.dbz.username>${database.informix.username}</database.informix.dbz.username>
     <database.informix.dbz.password>${database.informix.password}</database.informix.dbz.password>
-    <database.informix.dbname>sysuser</database.informix.dbname>
+    <database.informix.dbname>testdb</database.informix.dbname>
 
     <!-- Oracle configuration-->
     <database.oracle.username>debezium</database.oracle.username>
